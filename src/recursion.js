@@ -110,15 +110,39 @@ var range = function(x, y) {
 // https://www.khanacademy.org/computing/computer-science/algorithms/recursive-algorithms/a/computing-powers-of-a-number
 var exponent = function(base, exp) {
 
+  //The base case is when exp = 0, base = 1
   if (exp === 0) {
     return 1;
   }
 
-  if (exp < 0) {
-    return 1 / (exponent(base, (exp * -1)));
+  //if exp = 1, return the base
+  if (exp === 1) {
+    return base;
+  }
+  //if exp is even number; recursively compute y = x^n/2
+  //then x^n = y * y
+  // x^n = x^n/2 * x^n/2
+  if (exp > 0 && exp % 2 === 0) {
+    var y = exponent(base, exp/2)
+    var x = y * y;
+    return x;
+  }
+  //if exp is odd;
+  //x^n = x^n-1 * x
+  if (exp > 0 && exp % 2 === 1) {
+    return base * exponent(base, exp - 1);
   }
 
-  return base * exponent(base, exp - 1);
+  //x^n = 1/x^-n
+  if (exp < 0) {
+    return 1 / exponent(base, exp * -1);
+  }
+
+  // if (exp < 0) {
+  //   return 1 / (exponent(base, (exp * -1)));
+  // }
+
+  // return base * exponent(base, exp - 1);
 
 };
 
@@ -127,14 +151,54 @@ var exponent = function(base, exp) {
 // powerOfTwo(16); // true
 // powerOfTwo(10); // false
 var powerOfTwo = function(n) {
+  if (n === 1) {
+    return true;
+  }
+  if (n < 1) {
+    return false;
+  }
+
+  return powerOfTwo(n/2)
 };
 
 // 9. Write a function that reverses a string.
 var reverse = function(string) {
+
+ if (string === '') {
+   return '';
+ } else {
+   //call the reverse function recursively with one character less and so on
+   return reverse(string.substr(1)) + string.charAt(0);
+ }
+
+//2. iterating
+  //  var result = '';
+  //  for (var i = string.length -1; i >=0; i--) {
+  //    result += str[i];
+  //  }
+  //  return result;
+
+//3.  .split into array, .reverse on array, .join into string
+  // return string.split('').reverse().join('');
+
+  //4. use .reduce, first use .split to split string into array
+//  return string.split('').reduce(function(acc, char) {
+//    char + acc;
+//  }, '')
 };
 
 // 10. Write a function that determines if a string is a palindrome.
 var palindrome = function(string) {
+//remove non-alphanumeric characters and change string to lowercase
+  string = string.replace(/[^a-z0-9]/i, '').toLowerCase();
+
+  if (string.length < 2) {
+    return true;
+  }
+  if (string[0] === string[string.length - 1]) {
+    return palindrome(string.slice(1, string.length - 1));
+  }
+  return false;
 };
 
 // 11. Write a function that returns the remainder of x divided by y without using the
@@ -209,6 +273,18 @@ var rMap = function(array, callback) {
 // countKeysInObj(obj, 'r') // 1
 // countKeysInObj(obj, 'e') // 2
 var countKeysInObj = function(obj, key) {
+
+  var count = 0;
+
+  for (var keyProperty in obj) {
+    if (keyProperty === key) {
+      count++;
+    }
+    if (typeof(obj[keyProperty]) === 'object') {
+      count += countKeysInObj(obj[keyProperty], key)
+    }
+  }
+  return count;
 };
 
 // 23. Write a function that counts the number of times a value occurs in an object.
@@ -216,11 +292,34 @@ var countKeysInObj = function(obj, key) {
 // countValuesInObj(obj, 'r') // 2
 // countValuesInObj(obj, 'e') // 1
 var countValuesInObj = function(obj, value) {
+
+  var count = 0;
+
+  for (var key in obj) {
+    if (obj[key] === value) {
+      count++;
+    }
+    if (typeof(obj[key]) === 'object') {
+      count += countValuesInObj(obj[key], value);
+    }
+  }
+  return count;
 };
 
 // 24. Find all keys in an object (and nested objects) by a provided name and rename
 // them to a provided new name while preserving the value stored at that key.
 var replaceKeysInObj = function(obj, oldKey, newKey) {
+
+  for (var key in obj) {
+    if (key === oldKey) {
+      obj[newKey] = obj[oldKey];
+      delete obj[oldKey];
+    }
+    if (typeof(obj[key]) === 'object') {
+      replaceKeysInObj(obj[key], oldKey, newKey);
+    }
+  }
+  return obj;
 };
 
 // 25. Get the first n Fibonacci numbers. In the Fibonacci sequence, each subsequent
