@@ -71,6 +71,7 @@ var isEven = function(n) {
   }
 
   return isEven(n-2);
+
 };
 
 // 5. Sum all integers below a given integer.
@@ -328,6 +329,16 @@ var replaceKeysInObj = function(obj, oldKey, newKey) {
 // fibonacci(5); // [0,1,1,2,3,5]
 // Note: The 0 is not counted.
 var fibonacci = function(n) {
+  if (n === 1) {
+    return [0, 1];
+  }
+  if (n <= 0) {
+    return null;
+  }
+
+  var array = fibonacci(n - 1);
+  array.push(array[array.length -1] + array[array.length -2]);
+  return array;
 };
 
 // 26. Return the Fibonacci number located at index n of the Fibonacci sequence.
@@ -336,6 +347,31 @@ var fibonacci = function(n) {
 // nthFibo(7); // 13
 // nthFibo(3); // 2
 var nthFibo = function(n) {
+
+  if (n < 0) {
+    return null;
+  }
+  if (n <= 1 ) {
+    return n;
+  }
+  if (n === 2) {
+    return 1;
+  }
+  return nthFibo(n-1) + nthFibo(n-2);
+
+
+// fib(n, memo) {
+//   memo = memo || {};
+
+//   if (memo[n]) {
+//     return memo[n];
+//   }
+//   if (n <= 1) {
+//     return 1;
+//   }
+
+//   return memo[num] = fib(n -1, memo) + fib(n-2, memo);
+// }
 };
 
 // 27. Given an array of words, return a new array containing each word capitalized.
@@ -364,6 +400,28 @@ var nestedEvenSum = function(obj) {
 // 30. Flatten an array containing nested arrays.
 // flatten([1,[2],[3,[[4]]],5]); // [1,2,3,4,5]
 var flatten = function(array) {
+  var result = [];
+
+  if (array.length > 0) {
+    for (var i = 0; i < array.length; i++) {
+      if (Array.isArray(array[i])) {
+        result = result.concat(flatten(array[i]));
+      }
+      else {
+        result.push(array[i]);
+      }
+    }
+  }
+  return result;
+
+
+  // return array.reduce(function(accum, item) {
+  //   if (Array.isArray(item)) {
+  //     return accum.concat(flatten(item));
+  //   } else {
+  //     return item;
+  //   }
+  // }, []);
 };
 
 // 31. Given a string, return an object containing tallies of each letter.
